@@ -1,0 +1,9 @@
+AddDefaultCharset UTF-8
+
+RewriteEngine On
+# www -> без www
+RewriteCond %{HTTP_HOST} ^www\.audi-club\.md$ [NC]
+RewriteRule ^(.*)$ https://audi-club.md/$1 [R=301,L]
+# http -> https
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://audi-club.md/$1 [R=301,L]

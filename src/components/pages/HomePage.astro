@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../ArticleCard.astro';
+import PartnerSection from '../PartnerSection.astro';
+import { SITE, t, l, type Locale } from '../../lib/i18n';
+import { getArticles } from '../../lib/articles';
+
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const ui = t[locale];
+const latest = (await getArticles(locale)).slice(0, 6);
+const copy = locale === 'ru' ? {
+  title: 'VW Club Moldova — техническое сообщество Volkswagen',
+  desc: 'Клуб владельцев Volkswagen в Молдове: практические статьи, модели, диагностика, эксплуатация и сервис-партнёр.',
+  eyebrow: 'Независимое сообщество владельцев',
+  lead: 'Опыт эксплуатации, проверка перед покупкой и понятные технические материалы по популярным моделям Volkswagen.',
+  knowledge: 'База знаний Volkswagen',
+  knowledgeText: 'Собираем проверяемые материалы о моделях, двигателях, DSG, дизельных системах и диагностике. Технические рекомендации не заменяют осмотр конкретного автомобиля.',
+  models: 'Популярные модели',
+  about: 'Сайт помогает быстро найти полезный материал и перейти к общению с участниками клуба в Facebook.',
+} : {
+  title: 'VW Club Moldova — comunitatea tehnică Volkswagen',
+  desc: 'Clubul proprietarilor Volkswagen din Moldova: articole practice, modele, diagnosticare, exploatare și partener service.',
+  eyebrow: 'Comunitate independentă de proprietari',
+  lead: 'Experiență de exploatare, verificare înainte de cumpărare și materiale tehnice clare despre modelele Volkswagen populare.',
+  knowledge: 'Baza de cunoștințe Volkswagen',
+  knowledgeText: 'Adunăm materiale verificabile despre modele, motoare, DSG, sisteme diesel și diagnosticare. Recomandările nu înlocuiesc inspecția unui automobil concret.',
+  models: 'Modele populare',
+  about: 'Site-ul ajută la găsirea rapidă a materialelor și la comunicarea cu membrii clubului pe Facebook.',
+};
+const models = [
+  { name: 'Golf 7', slug: 'golf-7' },
+  { name: 'Passat B8', slug: 'passat-b8' },
+  { name: 'Tiguan II', slug: 'tiguan-ii' },
+];
+---
+<BaseLayout locale={locale} title={copy.title} description={copy.desc} path="/">
+  <section class="hero">
+    <div class="container hero__grid">
+      <div>
+        <p class="eyebrow">{copy.eyebrow}</p>
+        <h1>{ui.heroSlogan}</h1>
+        <p class="hero__lead">{copy.lead}</p>
+        <div class="hero__actions">
+          {SITE.fbGroup ? <a class="btn btn--primary" href={SITE.fbGroup} target="_blank" rel="noopener">{ui.ctaJoin}</a> : <span class="btn btn--disabled" aria-disabled="true">{ui.ctaJoin}</span>}
+          <a class="btn btn--ghost" href={l(locale, '/zhurnal/')}>{ui.allArticles}</a>
+        </div>
+      </div>
+      <aside class="tech-card">
+        <span>MQB · DSG · TDI · TSI</span>
+        <strong>{copy.knowledge}</strong>
+        <p>{copy.knowledgeText}</p>
+      </aside>
+    </div>
+  </section>
+  <section class="section"><div class="container">
+    <div class="section-head"><h2>{copy.models}</h2><a class="link" href={l(locale, '/models/')}>{ui.modelsIndexTitle}</a></div>
+    <div class="model-grid">{models.map((m) => <a href={l(locale, `/models/${m.slug}/`)}>{m.name}<span>→</span></a>)}</div>
+  </div></section>
+  <section class="section section--soft"><div class="container">
+    <div class="section-head"><h2>{ui.latest}</h2><a class="link" href={l(locale, '/zhurnal/')}>{ui.allArticles}</a></div>
+    <div class="grid-cards">{latest.map((article) => <ArticleCard article={article} locale={locale} />)}</div>
+  </div></section>
+  <section class="section"><div class="container about"><h2>{ui.aboutTitle}</h2><p>{copy.about}</p></div></section>
+  <PartnerSection locale={locale} />
+</BaseLayout>
+<style>
+  .hero{padding:clamp(4rem,10vw,8rem) 0;background:linear-gradient(135deg,#f4f7fa 0%,#e7f2fa 100%);border-bottom:1px solid var(--c-line)}
+  .hero__grid{display:grid;grid-template-columns:1.4fr .8fr;gap:clamp(2rem,6vw,6rem);align-items:center}
+  .eyebrow{color:var(--c-accent);font-weight:750;text-transform:uppercase;letter-spacing:.08em;font-size:.78rem}
+  h1{font-size:clamp(3rem,8vw,6.5rem);line-height:.92;color:#003b70;margin:.5rem 0 1.5rem}
+  .hero__lead{font-size:clamp(1.1rem,2vw,1.35rem);max-width:42rem;color:var(--c-text-soft)}
+  .hero__actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem}.btn--disabled{opacity:.65;cursor:not-allowed}
+  .tech-card{background:#003b70;color:white;padding:clamp(1.5rem,4vw,3rem);border-radius:1rem;display:grid;gap:1rem;box-shadow:0 24px 60px #003b7022}
+  .tech-card span{font-family:monospace;color:#8fd3ff;letter-spacing:.08em}.tech-card strong{font-size:1.65rem}.tech-card p{color:#d7eaf7}
+  .section-head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:2rem}
+  .model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.model-grid a{display:flex;justify-content:space-between;padding:1.3rem;border:1px solid var(--c-line);border-radius:.7rem;text-decoration:none;font-weight:700;background:white}
+  .section--soft{background:var(--c-bg-inset)}.about{max-width:48rem}.about p{font-size:1.15rem;color:var(--c-text-soft)}
+  @media(max-width:48rem){.hero__grid{grid-template-columns:1fr}.model-grid{grid-template-columns:repeat(2,1fr)}}
+</style>

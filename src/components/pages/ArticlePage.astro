@@ -1,0 +1,169 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { render } from 'astro:content';
+import { SITE, t, l, formatDate, modelSlug, type Locale } from '../../lib/i18n';
+import type { Article } from '../../lib/articles';
+import { mediaForArticle } from '../../lib/articleMedia';
+import { mobileImageSrc } from '../../lib/images';
+
+interface Props {
+  locale: Locale;
+  article: Article;
+  /** Есть ли перевод этой статьи в другой локали */
+  hasTranslation: boolean;
+}
+const { locale, article, hasTranslation } = Astro.props;
+const ui = t[locale];
+const { title, description, date, type, model, engine, years, cover } = article.data;
+const media = mediaForArticle(article.id);
+const resolvedCover = cover ?? media[0]?.src;
+const { Content } = await render(article);
+
+const path = `/zhurnal/${article.id}/`;
+
+const articleSchema = {
+  '@type': 'Article',
+  '@id': `${new URL(l(locale, path), SITE.url).href}#article`,
+  headline: title,
+  description,
+  datePublished: date.toISOString(),
+  inLanguage: locale,
+  image: resolvedCover ? new URL(resolvedCover, SITE.url).href : undefined,
+  author: { '@id': `${SITE.url}/#organization` },
+  publisher: { '@id': `${SITE.url}/#organization` },
+  mainEntityOfPage: { '@id': `${new URL(l(locale, path), SITE.url).href}#webpage` },
+  isPartOf: { '@id': `${SITE.url}/#website` },
+  articleSection: ui.typeLabel[type] ?? type,
+  about: [
+    ...model.map((name) => ({ '@type': 'Car', name: `Volkswagen ${name}`, brand: { '@type': 'Brand', name: 'Volkswagen' } })),
+    ...engine.map((name) => ({ '@type': 'Thing', name })),
+  ],
+};
+
+const partnerNote = {
+  ru: {
+    text: 'Если нужна профессиональная диагностика, обратитесь к сервис-партнёру клуба — BRAVO MOTORS.',
+    link: 'О партнёре',
+  },
+  ro: {
+    text: 'Dacă este necesară o diagnosticare profesională, adresați-vă partenerului service al clubului — BRAVO MOTORS.',
+    link: 'Despre partener',
+  },
+}[locale];
+---
+
+<BaseLayout
+  locale={locale}
+  title={`${title} — VW Club Moldova`}
+  description={description}
+  path={path}
+  altPath={hasTranslation ? path : null}
+  ogImage={resolvedCover}
+  ogType="article"
+  schema={articleSchema}
+  publishedTime={date.toISOString()}
+  imageAlt={media[0]?.alt[locale] ?? title}
+  crumbLabel={title}
+>
+  <article class="section">
+    <div class="container container--text">
+      <header class="article-head">
+        <p class="eyebrow">
+          {ui.typeLabel[type] ?? type}
+          {years && ` · ${years}`}
+        </p>
+        <h1>{title}</h1>
+        <p class="article-head__meta">
+          <time datetime={date.toISOString()}>{formatDate(date, locale)}</time>
+          <span> · {locale === 'ru' ? 'Редакция VW Club Moldova' : 'Redacția VW Club Moldova'}</span>
+        </p>
+        {(model.length > 0 || engine.length > 0) && (
+          <p class="article-head__tags">
+            {model.map((m) => (
+              <a class="chip" href={l(locale, `/models/${modelSlug(m)}/`)}>Volkswagen {m}</a>
+            ))}
+            {engine.map((e) => <span class="chip">{e}</span>)}
+          </p>
+        )}
+      </header>
+
+      {resolvedCover && (
+        <figure class="article-cover-wrap">
+          <picture>
+            <source media="(max-width: 640px)" srcset={mobileImageSrc(resolvedCover)} />
+            <img class="article-cover" src={resolvedCover} alt={media[0]?.alt[locale] ?? title} width="1200" height="800" fetchpriority="high" decoding="async" />
+          </picture>
+          {media[0]?.credit && <figcaption>{media[0].credit}</figcaption>}
+        </figure>
+      )}
+
+      {media.length > 1 && (
+        <div class="article-gallery" aria-label={locale === 'ru' ? 'Фотографии к статье' : 'Fotografii pentru articol'}>
+          {media.slice(1).map((entry) => (
+            <figure>
+              <picture>
+                <source media="(max-width: 640px)" srcset={mobileImageSrc(entry.src)} />
+                <img src={entry.src} alt={entry.alt[locale]} width="1200" height="800" loading="lazy" decoding="async" />
+              </picture>
+              {(entry.caption || entry.credit) && (
+                <figcaption>{entry.caption?.[locale]}{entry.caption && entry.credit ? ' · ' : ''}{entry.credit}</figcaption>
+              )}
+            </figure>
+          ))}
+        </div>
+      )}
+
+      <div class="prose">
+        <Content />
+      </div>
+
+      <aside class="partner-note">
+        <p>
+          {partnerNote.text}
+          <a class="link" href={l(locale, '/partner/')}>{partnerNote.link}</a>
+        </p>
+      </aside>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .article-head { display: grid; gap: var(--space-2); margin-bottom: var(--space-4); }
+  .article-head__meta { color: var(--c-text-faint); font-size: var(--fs-small); }
+  .article-head__tags { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+  .article-cover-wrap { margin: 0 0 var(--space-4); }
+  .article-cover { border-radius: var(--radius); }
+  .article-cover-wrap figcaption,
+  .article-gallery figcaption {
+    margin-top: var(--space-1);
+    color: var(--c-text-faint);
+    font-size: var(--fs-small);
+  }
+  .article-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-3);
+    margin-bottom: var(--space-5);
+  }
+  .article-gallery figure { margin: 0; }
+  .article-gallery img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--radius);
+  }
+  @media (max-width: 640px) {
+    .article-gallery { grid-template-columns: 1fr; }
+  }
+  .partner-note {
+    margin-top: var(--space-5);
+    padding: var(--space-3);
+    background: var(--c-bg-raised);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    font-size: var(--fs-small);
+    color: var(--c-text-soft);
+  }
+  .partner-note code { color: var(--c-text); font-weight: 700; letter-spacing: 0.06em; }
+  .partner-note .link { margin-left: 0.5em; }
+</style>

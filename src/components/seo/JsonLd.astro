@@ -1,0 +1,9 @@
+---
+import { serializeJsonLd, type SchemaEntity } from '../../lib/seo/schema';
+
+interface Props { graph: SchemaEntity; }
+const { graph } = Astro.props;
+const json = serializeJsonLd(graph);
+---
+
+<script is:inline type="application/ld+json" set:html={json}></script>

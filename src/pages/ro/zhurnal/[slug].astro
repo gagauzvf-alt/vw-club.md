@@ -1,0 +1,15 @@
+---
+import ArticlePage from '../../../components/pages/ArticlePage.astro';
+import { getArticles } from '../../../lib/articles';
+
+export async function getStaticPaths() {
+  const [ro, ru] = await Promise.all([getArticles('ro'), getArticles('ru')]);
+  const ruIds = new Set(ru.map((a) => a.id));
+  return ro.map((article) => ({
+    params: { slug: article.id },
+    props: { article, hasTranslation: ruIds.has(article.id) },
+  }));
+}
+const { article, hasTranslation } = Astro.props;
+---
+<ArticlePage locale="ro" article={article} hasTranslation={hasTranslation} />

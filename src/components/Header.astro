@@ -1,0 +1,97 @@
+---
+import { t, l, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+  path: string;
+  altPath?: string | null;
+}
+
+const { locale, path, altPath } = Astro.props;
+const ui = t[locale];
+const otherLocale: Locale = locale === 'ru' ? 'ro' : 'ru';
+// Переключатель ведёт на ту же страницу другой локали; если перевода нет — на главную
+const switchHref = l(otherLocale, altPath ?? '/');
+
+const nav = [
+  { href: l(locale, '/o-klube/'), label: ui.nav.about, key: '/o-klube/' },
+  { href: l(locale, '/zhurnal/'), label: ui.nav.journal, key: '/zhurnal/' },
+  { href: l(locale, '/models/'), label: ui.nav.models, key: '/models/' },
+  { href: l(locale, '/partner/'), label: ui.nav.partner, key: '/partner/' },
+];
+
+const isActive = (key: string) => path.startsWith(key);
+---
+
+<header class="header">
+  <div class="container header__inner">
+    <a href={l(locale, '/')} class="wordmark" aria-label="VW Club Moldova">
+      <span class="wordmark__badge">VW</span><span>Club Moldova</span>
+    </a>
+    <nav class="nav" aria-label="Основная навигация">
+      {nav.map((item) => (
+        <a href={item.href} class="nav__link" aria-current={isActive(item.key) ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))}
+      <a href={switchHref} class="nav__lang" rel="alternate" hreflang={otherLocale}>
+        {otherLocale.toUpperCase()}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--c-bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--c-line);
+  }
+  .header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 4.25rem;
+  }
+  .wordmark {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .wordmark__badge { display:grid; place-items:center; width:2.2rem; height:2.2rem; border:2px solid var(--c-accent); border-radius:50%; font-weight:800; margin-right:.65rem; }
+  .nav { display: flex; align-items: center; gap: clamp(0.9rem, 2.5vw, 1.8rem); flex-wrap: wrap; }
+  .nav__link {
+    font-size: var(--fs-small);
+    font-weight: 500;
+    color: var(--c-text-soft);
+    text-decoration: none;
+    padding-block: 0.35em;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .nav__link:hover { color: var(--c-text); }
+  .nav__link[aria-current='page'] {
+    color: var(--c-text);
+    border-bottom-color: var(--c-accent);
+  }
+  .nav__lang {
+    font-size: var(--fs-micro);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: var(--c-text-soft);
+    text-decoration: none;
+    border: 1px solid var(--c-line);
+    border-radius: 4px;
+    padding: 0.35em 0.7em;
+    transition: border-color 0.15s ease, color 0.15s ease;
+  }
+  .nav__lang:hover { border-color: var(--c-accent); color: var(--c-text); }
+  @media (max-width: 40rem) {
+    .header__inner { flex-direction: column; align-items: flex-start; padding-block: 0.75rem; min-height: 0; }
+  }
+</style>

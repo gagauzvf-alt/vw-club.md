@@ -1,0 +1,28 @@
+{
+  "name": "vw-club-md",
+  "version": "0.1.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "audit:seo": "node scripts/audit-seo.mjs",
+    "audit:schema": "node scripts/audit-schema.mjs",
+    "images:responsive": "node scripts/generate-responsive-images.mjs",
+    "preview": "astro preview",
+    "cms": "cross-env KEYSTATIC=true astro dev"
+  },
+  "dependencies": {
+    "@astrojs/node": "^10.1.4",
+    "@astrojs/react": "^5.0.7",
+    "@astrojs/sitemap": "^3.7.3",
+    "@fontsource-variable/inter": "^5.2.8",
+    "@fontsource-variable/source-serif-4": "^5.2.8",
+    "@keystatic/astro": "^5.2.0",
+    "@keystatic/core": "^0.5.51",
+    "astro": "6.4.6",
+    "cross-env": "^10.1.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
+  },
+  "private": true,
+  "type": "module"
+}

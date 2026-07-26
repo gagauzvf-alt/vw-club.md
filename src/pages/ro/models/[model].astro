@@ -1,0 +1,15 @@
+---
+import ModelPage from '../../../components/pages/ModelPage.astro';
+import { getModelGroups } from '../../../lib/articles';
+
+export async function getStaticPaths() {
+  const [ro, ru] = await Promise.all([getModelGroups('ro'), getModelGroups('ru')]);
+  const ruSlugs = new Set(ru.map((g) => g.slug));
+  return ro.map((group) => ({
+    params: { model: group.slug },
+    props: { group, hasTranslation: ruSlugs.has(group.slug) },
+  }));
+}
+const { group, hasTranslation } = Astro.props;
+---
+<ModelPage locale="ro" group={group} hasTranslation={hasTranslation} />

@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { t, l, type Locale } from '../../lib/i18n';
+import { getModelGroups } from '../../lib/articles';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const ui = t[locale];
+const groups = await getModelGroups(locale);
+
+const metaDesc =
+  locale === 'ru'
+    ? 'Страницы моделей Volkswagen: типичные проблемы, обслуживание и кейсы по каждой модели из журнала клуба.'
+    : 'Paginile modelelor Volkswagen: probleme tipice, întreținere și cazuri pentru fiecare model, din jurnalul clubului.';
+const count = (n: number) =>
+  locale === 'ru'
+    ? `${n} ${n === 1 ? 'статья' : n < 5 ? 'статьи' : 'статей'}`
+    : `${n} ${n === 1 ? 'articol' : 'articole'}`;
+---
+
+<BaseLayout locale={locale} title={`${ui.modelsIndexTitle} — VW Club Moldova`} description={metaDesc} path="/models/" pageType="CollectionPage">
+  <section class="section">
+    <div class="container">
+      <h1>{ui.modelsIndexTitle}</h1>
+      <p class="intro">{metaDesc}</p>
+      <ul class="models">
+        {groups.map((g) => (
+          <li>
+            <a class="models__item" href={l(locale, `/models/${g.slug}/`)}>
+              <span class="models__name">Volkswagen {g.model}</span>
+              <span class="models__count">{count(g.articles.length)}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  h1 { margin-bottom: var(--space-1); }
+  .intro { color: var(--c-text-soft); max-width: 42rem; margin-bottom: var(--space-4); }
+  .models { list-style: none; padding: 0; display: grid; gap: var(--space-1); max-width: 34rem; }
+  .models__item {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-3);
+    background: var(--c-bg-raised);
+    border: 1px solid var(--c-line);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: border-color 0.15s ease;
+  }
+  .models__item:hover { border-color: var(--c-text-faint); }
+  .models__name { font-weight: 600; }
+  .models__count { font-size: var(--fs-micro); color: var(--c-text-faint); }
+</style>

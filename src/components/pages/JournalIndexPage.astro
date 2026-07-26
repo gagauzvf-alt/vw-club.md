@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ArticleCard from '../ArticleCard.astro';
+import { t, type Locale } from '../../lib/i18n';
+import { getArticles } from '../../lib/articles';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const ui = t[locale];
+const articles = await getArticles(locale);
+const types = [...new Set(articles.map((a) => a.data.type))];
+
+const metaTitle =
+  locale === 'ru' ? 'Журнал — VW Club Moldova' : 'Jurnal — VW Club Moldova';
+---
+
+<BaseLayout locale={locale} title={metaTitle} description={ui.journalIntro} path="/zhurnal/" pageType="CollectionPage">
+  <section class="section">
+    <div class="container">
+      <h1>{ui.journalTitle}</h1>
+      <p class="intro">{ui.journalIntro}</p>
+
+      <div class="filters" role="group" aria-label="Фильтр по типу">
+        <button class="chip" data-filter="all" aria-current="true">{ui.filterAll}</button>
+        {types.map((type) => (
+          <button class="chip" data-filter={type}>{ui.typeLabel[type] ?? type}</button>
+        ))}
+      </div>
+
+      <div class="grid-cards" id="articles">
+        {articles.map((article) => (
+          <div data-type={article.data.type}>
+            <ArticleCard article={article} locale={locale} />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Прогрессивное улучшение: без JS показываются все статьи
+  const chips = document.querySelectorAll<HTMLButtonElement>('.filters .chip');
+  const items = document.querySelectorAll<HTMLElement>('#articles > [data-type]');
+  chips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const filter = chip.dataset.filter;
+      chips.forEach((c) => c.setAttribute('aria-current', String(c === chip)));
+      items.forEach((item) => {
+        item.style.display = filter === 'all' || item.dataset.type === filter ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+<style>
+  h1 { margin-bottom: var(--space-1); }
+  .intro { color: var(--c-text-soft); max-width: 42rem; margin-bottom: var(--space-4); }
+  .filters { display: flex; gap: var(--space-1); flex-wrap: wrap; margin-bottom: var(--space-4); }
+  .filters .chip { background: transparent; font: inherit; cursor: pointer; }
+</style>

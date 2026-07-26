@@ -1,0 +1,11 @@
+:root {
+  --c-accent:#0077cc; --c-accent-hover:#0067b3; --c-accent-down:#00558f;
+  --c-bg:#ffffff; --c-bg-raised:#ffffff; --c-bg-inset:#f4f7fa; --c-line:#d9e2ec;
+  --c-text:#1f2933; --c-text-soft:#52616f; --c-text-prose:#334e68; --c-text-faint:#718096;
+  --font-sans:'Inter Variable',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --font-prose:'Source Serif 4 Variable',Georgia,'Times New Roman',serif;
+  --fs-hero:clamp(2.8rem,7vw,5.6rem); --fs-h1:clamp(2rem,4.5vw,3.1rem); --fs-h2:clamp(1.6rem,3.5vw,2.3rem); --fs-h3:clamp(1.2rem,2.2vw,1.5rem);
+  --fs-body:1.075rem; --fs-small:.9rem; --fs-micro:.78rem; --lh-tight:1.08; --lh-heading:1.2; --lh-body:1.72; --track-caps:.12em;
+  --space-1:.5rem; --space-2:1rem; --space-3:1.5rem; --space-4:2.5rem; --space-5:4rem; --space-6:6.5rem;
+  --container:72rem; --container-text:44rem; --radius:10px; --radius-btn:6px; --shadow-card:0 12px 32px rgba(32,69,96,.10);
+}

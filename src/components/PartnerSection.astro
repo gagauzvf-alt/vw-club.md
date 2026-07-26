@@ -1,0 +1,14 @@
+---
+import { t, l, type Locale } from '../lib/i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const ui = t[locale];
+const copy = locale === 'ru'
+  ? { text: 'BRAVO MOTORS представлен как отдельный сервис-партнёр клуба. Клубные материалы сохраняют редакционную независимость.', more: 'О сервис-партнёре' }
+  : { text: 'BRAVO MOTORS este prezentat ca partener service separat al clubului. Materialele clubului își păstrează independența editorială.', more: 'Despre partenerul service' };
+---
+<section class="section partner" id="partner"><div class="container partner__inner">
+  <p class="eyebrow">{ui.partnerOfClub}</p><h2>{ui.partnerHeading}</h2>
+  <p>{copy.text}</p><a class="btn btn--ghost" href={l(locale, '/partner/')}>{copy.more}</a>
+</div></section>
+<style>.partner{background:#003b70;color:white}.partner__inner{display:grid;gap:1rem;max-width:48rem}.partner p{color:#d7eaf7}.partner a{justify-self:start}</style>

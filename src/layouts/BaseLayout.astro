@@ -1,0 +1,147 @@
+---
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
+import { SITE, l, type Locale, buildBreadcrumbs } from '../lib/i18n';
+import { buildSiteGraph, type SchemaEntity } from '../lib/seo/schema';
+
+interface Props {
+  locale: Locale;
+  title: string;
+  description: string;
+  /** Путь страницы без локали, со слэшами: '/', '/zhurnal/', '/partner/' */
+  path: string;
+  /** Путь той же страницы в другой локали; null — если перевода нет */
+  altPath?: string | null;
+  ogImage?: string;
+  /** Дополнительный JSON-LD страницы (Article и т.п.) */
+  schema?: object | object[];
+  ogType?: 'website' | 'article';
+  robots?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  imageAlt?: string;
+  /** Точное название страницы для крошек — обязательно для статей и моделей. */
+  crumbLabel?: string | null;
+  pageType?: string;
+  structuredData?: boolean;
+}
+
+const {
+  locale,
+  title,
+  description,
+  path,
+  altPath = path,
+  ogImage = '/og-default.svg',
+  schema,
+  ogType = 'website',
+  robots = 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1',
+  publishedTime,
+  modifiedTime,
+  imageAlt = title,
+  crumbLabel = null,
+  pageType = 'WebPage',
+  structuredData = true,
+} = Astro.props;
+
+const otherLocale: Locale = locale === 'ru' ? 'ro' : 'ru';
+const canonical = new URL(l(locale, path), SITE.url).href;
+const altUrl = altPath != null ? new URL(l(otherLocale, altPath), SITE.url).href : null;
+const ruUrl = locale === 'ru' ? canonical : altUrl;
+const roUrl = locale === 'ro' ? canonical : altUrl;
+
+// ── Breadcrumbs ────────────────────────────────────────────────────────────
+const crumbs = buildBreadcrumbs(locale, path, crumbLabel);
+const schemaGraph = buildSiteGraph({
+  locale, canonical, title, description, image: ogImage, imageAlt, crumbs, pageType,
+  extra: (schema ? (Array.isArray(schema) ? schema : [schema]) : []) as SchemaEntity[],
+});
+const absoluteOgImage = new URL(ogImage, SITE.url).href;
+---
+
+<!doctype html>
+<html lang={locale}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={canonical} />
+    {ruUrl && <link rel="alternate" hreflang="ru" href={ruUrl} />}
+    {roUrl && <link rel="alternate" hreflang="ro" href={roUrl} />}
+    {ruUrl && <link rel="alternate" hreflang="x-default" href={ruUrl} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:site_name" content={SITE.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={absoluteOgImage} />
+    <meta property="og:image:alt" content={imageAlt} />
+    <meta property="og:locale" content={locale === 'ru' ? 'ru_RU' : 'ro_RO'} />
+    <meta property="og:locale:alternate" content={locale === 'ru' ? 'ro_RO' : 'ru_RU'} />
+    {ogType === 'article' && publishedTime && <meta property="article:published_time" content={publishedTime} />}
+    {ogType === 'article' && modifiedTime && <meta property="article:modified_time" content={modifiedTime} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={absoluteOgImage} />
+    <meta name="twitter:image:alt" content={imageAlt} />
+    <meta name="theme-color" content="#003b70" />
+    {structuredData && <JsonLd graph={schemaGraph} />}
+  </head>
+  <body>
+    <Header locale={locale} path={path} altPath={altPath} />
+    <main id="main">
+      {crumbs.length > 0 && (
+        <nav class="breadcrumbs" aria-label="Breadcrumb">
+          <div class="wrap">
+            <ol>
+              {crumbs.map((c, i) => (
+                <li>
+                  {c.current ? (
+                    <span aria-current="page">{c.name}</span>
+                  ) : (
+                    <a href={c.path}>{c.name}</a>
+                  )}
+                  {i < crumbs.length - 1 && <span class="sep" aria-hidden="true">/</span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+        </nav>
+      )}
+      <slot />
+    </main>
+    <Footer locale={locale} />
+  </body>
+</html>
+
+<style>
+  .breadcrumbs { padding: 14px 0 0; }
+  .breadcrumbs .wrap { max-width: var(--container); margin-inline: auto; padding-inline: var(--space-3); }
+  .breadcrumbs ol {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-micro);
+    letter-spacing: 0.04em;
+  }
+  .breadcrumbs li { display: flex; align-items: center; gap: 6px; }
+  .breadcrumbs a { color: var(--c-text-soft); text-decoration: none; }
+  .breadcrumbs a:hover { color: var(--c-text); }
+  .breadcrumbs [aria-current="page"] { color: var(--c-text); }
+  .breadcrumbs .sep { color: var(--c-line); }
+  @media (max-width: 520px) { .breadcrumbs { padding-top: 10px; } }
+</style>

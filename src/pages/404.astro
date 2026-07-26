@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { t, l } from '../lib/i18n';
+
+const ui = t.ru;
+---
+
+<BaseLayout locale="ru" title="404 — VW Club Moldova" description={ui.notFoundText} path="/404/" altPath={null} robots="noindex, follow" structuredData={false}>
+  <section class="section">
+    <div class="container nf">
+      <p class="nf__code">404</p>
+      <h1>{ui.notFoundTitle}</h1>
+      <p class="nf__text">{ui.notFoundText}</p>
+      <p class="nf__text nf__text--ro">{t.ro.notFoundText}</p>
+      <div class="nf__actions">
+        <a class="btn btn--primary" href={l('ru', '/zhurnal/')}>{ui.toJournal}</a>
+        <a class="btn btn--ghost" href={l('ro', '/zhurnal/')}>{t.ro.toJournal}</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf { display: grid; gap: var(--space-2); padding-block: var(--space-5); }
+  .nf__code {
+    font-size: clamp(4rem, 15vw, 9rem);
+    font-weight: 800;
+    line-height: 1;
+    color: var(--c-bg-raised);
+    -webkit-text-stroke: 1px var(--c-text-faint);
+  }
+  .nf__text { color: var(--c-text-soft); max-width: 34rem; }
+  .nf__text--ro { font-size: var(--fs-small); color: var(--c-text-faint); }
+  .nf__actions { display: flex; gap: var(--space-2); flex-wrap: wrap; margin-top: var(--space-2); }
+</style>

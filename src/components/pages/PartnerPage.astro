@@ -1,0 +1,31 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { SITE, t, type Locale } from '../../lib/i18n';
+interface Props { locale: Locale }
+const { locale } = Astro.props;
+const ui = t[locale];
+const copy = locale === 'ru' ? {
+  title: 'Сервис-партнёр VW Club Moldova — BRAVO MOTORS',
+  desc: 'Роль BRAVO MOTORS как отдельного технического партнёра сообщества VW Club Moldova.',
+  intro: 'BRAVO MOTORS — сервис-партнёр клуба. Эта страница помогает перейти к актуальной информации сервиса, не смешивая её с независимой редакционной частью клуба.',
+  scope: 'Что важно владельцу Volkswagen',
+  items: ['Диагностика должна начинаться с проверки конкретного автомобиля, а не с универсального вывода.', 'Стоимость и состав работ уточняются сервисом после осмотра.', 'Клуб не публикует неподтверждённые скидки, цены или гарантии результата.'],
+  site: 'Сайт BRAVO MOTORS', map: 'Открыть карту',
+} : {
+  title: 'Partenerul service VW Club Moldova — BRAVO MOTORS',
+  desc: 'Rolul BRAVO MOTORS ca partener tehnic separat al comunității VW Club Moldova.',
+  intro: 'BRAVO MOTORS este partenerul service al clubului. Pagina oferă acces la informația actuală a service-ului fără a o amesteca cu partea editorială independentă a clubului.',
+  scope: 'Ce este important pentru proprietarul Volkswagen',
+  items: ['Diagnosticarea trebuie să pornească de la automobilul concret.', 'Costul și lucrările se confirmă de service după inspecție.', 'Clubul nu publică reduceri, prețuri sau garanții neconfirmate.'],
+  site: 'Site-ul BRAVO MOTORS', map: 'Deschide harta',
+};
+const schema = { '@type': 'Organization', '@id': `${SITE.url}/#service-partner`, name: 'BRAVO MOTORS', url: SITE.partnerUrl };
+---
+<BaseLayout locale={locale} title={copy.title} description={copy.desc} path="/partner/" schema={schema}>
+  <section class="section"><div class="container container--text page">
+    <p class="eyebrow">{ui.partnerOfClub}</p><h1>BRAVO MOTORS</h1><p class="lead">{copy.intro}</p>
+    <h2>{copy.scope}</h2><ul>{copy.items.map((item) => <li>{item}</li>)}</ul>
+    <div class="actions"><a class="btn btn--primary" href={SITE.partnerUrl} target="_blank" rel="noopener">{copy.site}</a><a class="btn btn--ghost" href={SITE.partnerMaps} target="_blank" rel="noopener">{copy.map}</a></div>
+  </div></section>
+</BaseLayout>
+<style>.page{display:grid;gap:1.25rem}.lead{font-size:1.2rem;color:var(--c-text-soft)}ul{display:grid;gap:.8rem;padding-left:1.3rem}.actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem}</style>

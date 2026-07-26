@@ -1,0 +1,44 @@
+---
+import { SITE, t, l, type Locale } from '../lib/i18n';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+const ui = t[locale];
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <span class="footer__name">VW Club Moldova</span>
+    </div>
+    <nav class="footer__links" aria-label="Соцсети">
+      {SITE.fbGroup && <a class="link" href={SITE.fbGroup} target="_blank" rel="noopener">Facebook Group</a>}
+      {SITE.fbPage && <a class="link" href={SITE.fbPage} target="_blank" rel="noopener">Facebook Page</a>}
+      {SITE.instagram && <a class="link" href={SITE.instagram} target="_blank" rel="noopener">Instagram</a>}
+      {SITE.clubMaps && <a class="link" href={SITE.clubMaps} target="_blank" rel="noopener">Google Maps</a>}
+    </nav>
+    <p class="footer__partner">
+      {ui.partnerOfClub}: <a class="link" href={l(locale, '/partner/')}>BRAVO MOTORS</a>
+    </p>
+    <p class="footer__disclaimer">© {year} VW Club Moldova. {ui.disclaimer}</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: var(--space-6);
+    background: var(--c-bg-inset);
+    border-top: 1px solid var(--c-line);
+    padding-block: var(--space-5);
+  }
+  .footer__inner { display: grid; gap: var(--space-3); }
+  .footer__brand { display: flex; align-items: baseline; gap: var(--space-2); }
+  .footer__name { font-weight: 700; }
+  .footer__since { font-size: var(--fs-micro); color: var(--c-text-faint); }
+  .footer__links { display: flex; gap: var(--space-3); flex-wrap: wrap; font-size: var(--fs-small); }
+  .footer__partner { font-size: var(--fs-small); color: var(--c-text-soft); }
+  .footer__disclaimer { font-size: var(--fs-micro); color: var(--c-text-faint); }
+</style>

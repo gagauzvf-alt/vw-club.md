@@ -1,0 +1,9 @@
+{
+  "name": "VW Club Moldova",
+  "short_name": "VW Club MD",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f4f7fa",
+  "theme_color": "#003b70",
+  "icons": []
+}
