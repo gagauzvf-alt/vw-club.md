@@ -24,8 +24,20 @@ const schema = { '@type': 'Organization', '@id': `${SITE.url}/#service-partner`,
 <BaseLayout locale={locale} title={copy.title} description={copy.desc} path="/partner/" schema={schema}>
   <section class="section"><div class="container container--text page">
     <p class="eyebrow">{ui.partnerOfClub}</p><h1>BRAVO MOTORS</h1><p class="lead">{copy.intro}</p>
+    <div class="partner-gallery">
+      {[
+        { src: '/images/partner/vw_service_01.webp', alt: locale === 'ru' ? 'Зона обслуживания BRAVO MOTORS' : 'Zona de service BRAVO MOTORS' },
+        { src: '/images/partner/vw_autoservice_02.webp', alt: locale === 'ru' ? 'Автосервис партнёра VW Club Moldova' : 'Service-ul partenerului VW Club Moldova' },
+        { src: '/images/partner/vw_autoservice_03.webp', alt: locale === 'ru' ? 'Рабочая зона автосервиса' : 'Zona de lucru a service-ului auto' },
+      ].map((image) => (
+        <picture>
+          <source media="(max-width: 640px)" srcset={image.src.replace('.webp', '-640.webp')} />
+          <img src={image.src} alt={image.alt} width="1200" height="800" loading="lazy" decoding="async" />
+        </picture>
+      ))}
+    </div>
     <h2>{copy.scope}</h2><ul>{copy.items.map((item) => <li>{item}</li>)}</ul>
     <div class="actions"><a class="btn btn--primary" href={SITE.partnerUrl} target="_blank" rel="noopener">{copy.site}</a><a class="btn btn--ghost" href={SITE.partnerMaps} target="_blank" rel="noopener">{copy.map}</a></div>
   </div></section>
 </BaseLayout>
-<style>.page{display:grid;gap:1.25rem}.lead{font-size:1.2rem;color:var(--c-text-soft)}ul{display:grid;gap:.8rem;padding-left:1.3rem}.actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem}</style>
+<style>.page{display:grid;gap:1.25rem}.lead{font-size:1.2rem;color:var(--c-text-soft)}.partner-gallery{display:grid;grid-template-columns:2fr 1fr;gap:1rem}.partner-gallery picture:first-child{grid-row:span 2}.partner-gallery img{width:100%;height:100%;min-height:12rem;aspect-ratio:4/3;object-fit:cover;border-radius:var(--radius)}ul{display:grid;gap:.8rem;padding-left:1.3rem}.actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem}@media(max-width:640px){.partner-gallery{grid-template-columns:1fr}.partner-gallery picture:first-child{grid-row:auto}.partner-gallery img{min-height:0}}</style>

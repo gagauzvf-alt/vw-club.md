@@ -47,6 +47,10 @@ const models = [
         </div>
       </div>
       <aside class="tech-card">
+        <picture>
+          <source media="(max-width: 640px)" srcset="/images/home/vw_logo-640.webp" />
+          <img src="/images/home/vw_logo.webp" alt="VW Club Moldova" width="1200" height="804" fetchpriority="high" decoding="async" />
+        </picture>
         <span>MQB · DSG · TDI · TSI</span>
         <strong>{copy.knowledge}</strong>
         <p>{copy.knowledgeText}</p>
@@ -71,7 +75,8 @@ const models = [
   h1{font-size:clamp(3rem,8vw,6.5rem);line-height:.92;color:#003b70;margin:.5rem 0 1.5rem}
   .hero__lead{font-size:clamp(1.1rem,2vw,1.35rem);max-width:42rem;color:var(--c-text-soft)}
   .hero__actions{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2rem}.btn--disabled{opacity:.65;cursor:not-allowed}
-  .tech-card{background:#003b70;color:white;padding:clamp(1.5rem,4vw,3rem);border-radius:1rem;display:grid;gap:1rem;box-shadow:0 24px 60px #003b7022}
+  .tech-card{background:#003b70;color:white;padding:clamp(1.5rem,4vw,3rem);border-radius:1rem;display:grid;gap:1rem;box-shadow:0 24px 60px #003b7022;overflow:hidden}
+  .tech-card picture{margin:calc(clamp(1.5rem,4vw,3rem) * -1);margin-bottom:.5rem}.tech-card img{width:100%;aspect-ratio:3/2;object-fit:cover}
   .tech-card span{font-family:monospace;color:#8fd3ff;letter-spacing:.08em}.tech-card strong{font-size:1.65rem}.tech-card p{color:#d7eaf7}
   .section-head{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;margin-bottom:2rem}
   .model-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}.model-grid a{display:flex;justify-content:space-between;padding:1.3rem;border:1px solid var(--c-line);border-radius:.7rem;text-decoration:none;font-weight:700;background:white}
