@@ -4,23 +4,42 @@ import { SITE, type Locale } from '../../lib/i18n';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const copy = locale === 'ru' ? {
-  title:'О клубе — VW Club Moldova', desc:'VW Club Moldova — независимое техническое сообщество владельцев Volkswagen в Молдове.',
+  title:'О клубе — VW Club Moldova', desc:'VW Club Moldova — независимое техническое сообщество, которое с 2013 года объединяет более 50 000 владельцев и поклонников Volkswagen.',
   heading:'О VW Club Moldova',
   intro:['VW Club Moldova объединяет владельцев Volkswagen в Молдове. Сайт создаётся как навигационный центр клуба и практическая техническая база знаний.','Материалы посвящены эксплуатации, проверке перед покупкой, моделям, двигателям, коробкам и диагностике. Они не заменяют документацию производителя и осмотр конкретного автомобиля.'],
+  communityEyebrow:'Сообщество в цифрах',
+  communityNumber:'50 000+',
+  communityText:'участников объединяет VW Club Moldova. С 2013 года клуб остаётся местом, где владельцы Volkswagen обмениваются опытом, задают технические вопросы и помогают друг другу.',
   principles:'Принципы', items:['Польза владельцу важнее рекламы.','Технические утверждения требуют проверяемых источников.','Клуб и сервис-партнёр остаются разными организациями.','Неизвестные контакты и статистика не публикуются до подтверждения.'],
   cta:'Перейти в Facebook-группу',
 } : {
-  title:'Despre club — VW Club Moldova', desc:'VW Club Moldova este comunitatea tehnică independentă a proprietarilor Volkswagen din Moldova.',
+  title:'Despre club — VW Club Moldova', desc:'VW Club Moldova este comunitatea tehnică independentă care, din 2013, reunește peste 50 000 de proprietari și pasionați Volkswagen.',
   heading:'Despre VW Club Moldova',
   intro:['VW Club Moldova reunește proprietarii Volkswagen din Moldova. Site-ul este creat ca centru de navigare al clubului și bază practică de cunoștințe tehnice.','Materialele sunt dedicate exploatării, verificării înainte de cumpărare, modelelor, motoarelor, cutiilor și diagnosticării. Ele nu înlocuiesc documentația producătorului și inspecția automobilului concret.'],
+  communityEyebrow:'Comunitatea în cifre',
+  communityNumber:'50 000+',
+  communityText:'de membri fac parte din VW Club Moldova. Din 2013, clubul este locul în care proprietarii Volkswagen fac schimb de experiență, discută întrebări tehnice și se ajută reciproc.',
   principles:'Principii', items:['Utilitatea pentru proprietar este mai importantă decât publicitatea.','Afirmațiile tehnice necesită surse verificabile.','Clubul și partenerul service rămân entități separate.','Contactele și statisticile necunoscute nu sunt publicate înainte de confirmare.'],
   cta:'Intră în grupul Facebook',
 };
 ---
 <BaseLayout locale={locale} title={copy.title} description={copy.desc} path="/o-klube/">
   <section class="section"><div class="container container--text page"><h1>{copy.heading}</h1>
-    {copy.intro.map((p)=><p>{p}</p>)}<h2>{copy.principles}</h2><ul>{copy.items.map((i)=><li>{i}</li>)}</ul>
+    {copy.intro.map((p)=><p>{p}</p>)}
+    <aside class="community-fact">
+      <p class="community-fact__eyebrow">{copy.communityEyebrow}</p>
+      <strong>{copy.communityNumber}</strong>
+      <p>{copy.communityText}</p>
+    </aside>
+    <h2>{copy.principles}</h2><ul>{copy.items.map((i)=><li>{i}</li>)}</ul>
     {SITE.fbGroup ? <a class="btn btn--primary" href={SITE.fbGroup} target="_blank" rel="noopener">{copy.cta}</a> : <p class="note">{copy.cta}</p>}
   </div></section>
 </BaseLayout>
-<style>.page{display:grid;gap:1.2rem}.page p,.page li{color:var(--c-text-soft)}.page ul{display:grid;gap:.7rem;padding-left:1.3rem}.note{padding:1rem;background:var(--c-bg-inset);border-left:4px solid var(--c-accent)}</style>
+<style>
+  .page{display:grid;gap:1.2rem}.page p,.page li{color:var(--c-text-soft)}.page ul{display:grid;gap:.7rem;padding-left:1.3rem}
+  .community-fact{display:grid;gap:.45rem;margin-block:1.25rem;padding:clamp(1.4rem,4vw,2.4rem);background:var(--c-bg-inset);border-left:5px solid var(--c-accent);border-radius:0 var(--radius) var(--radius) 0}
+  .community-fact__eyebrow{font-size:var(--fs-micro);font-weight:750;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--c-accent)!important}
+  .community-fact strong{font-size:clamp(2.8rem,8vw,5rem);line-height:1;color:#003b70;letter-spacing:-.04em}
+  .community-fact p:last-child{max-width:35rem}
+  .note{padding:1rem;background:var(--c-bg-inset);border-left:4px solid var(--c-accent)}
+</style>
