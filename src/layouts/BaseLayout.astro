@@ -97,6 +97,15 @@ const absoluteOgImage = new URL(ogImage, SITE.url).href;
     <meta name="twitter:image" content={absoluteOgImage} />
     <meta name="twitter:image:alt" content={imageAlt} />
     <meta name="theme-color" content="#003b70" />
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-Z6806LCLRP"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-Z6806LCLRP');
+    </script>
     {structuredData && <JsonLd graph={schemaGraph} />}
   </head>
   <body>
