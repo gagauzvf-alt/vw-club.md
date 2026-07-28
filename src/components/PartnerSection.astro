@@ -11,4 +11,23 @@ const copy = locale === 'ru'
   <p class="eyebrow">{ui.partnerOfClub}</p><h2>{ui.partnerHeading}</h2>
   <p>{copy.text}</p><a class="btn btn--ghost" href={l(locale, '/partner/')}>{copy.more}</a>
 </div></section>
-<style>.partner{background:#003b70;color:white}.partner__inner{display:grid;gap:1rem;max-width:48rem}.partner p{color:#d7eaf7}.partner a{justify-self:start}</style>
+<style>
+  .partner{background:#003b70;color:white}
+  .partner__inner{display:grid;gap:1rem;max-width:48rem}
+  .partner p{color:#d7eaf7}
+  .partner a{justify-self:start}
+  .partner .btn--ghost{
+    background:#fff;
+    color:#003b70;
+    border-color:#fff;
+    box-shadow:0 1px 2px rgb(0 0 0 / 18%);
+  }
+  .partner .btn--ghost:hover{
+    background:#e7f3fb;
+    border-color:#e7f3fb;
+  }
+  .partner .btn--ghost:focus-visible{
+    outline-color:#fff;
+    box-shadow:0 0 0 4px rgb(255 255 255 / 22%);
+  }
+</style>
