@@ -52,8 +52,8 @@ export function buildSiteGraph({
     {
       '@type': 'ImageObject',
       '@id': SCHEMA_IDS.logo,
-      url: `${SITE.url}/logo-dark.svg`,
-      contentUrl: `${SITE.url}/logo-dark.svg`,
+      url: `${SITE.url}/web-app-manifest-512x512.png`,
+      contentUrl: `${SITE.url}/web-app-manifest-512x512.png`,
     },
     {
       '@type': 'WebSite',

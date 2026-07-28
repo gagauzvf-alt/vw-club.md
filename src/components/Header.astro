@@ -26,7 +26,8 @@ const isActive = (key: string) => path.startsWith(key);
 <header class="header">
   <div class="container header__inner">
     <a href={l(locale, '/')} class="wordmark" aria-label="VW Club Moldova">
-      <span class="wordmark__badge">VW</span><span>Club Moldova</span>
+      <img class="wordmark__logo" src="/web-app-manifest-192x192.png" alt="" width="44" height="44" />
+      <span>Club Moldova</span>
     </a>
     <nav class="nav" aria-label="Основная навигация">
       {nav.map((item) => (
@@ -63,7 +64,12 @@ const isActive = (key: string) => path.startsWith(key);
     text-decoration: none;
     flex-shrink: 0;
   }
-  .wordmark__badge { display:grid; place-items:center; width:2.2rem; height:2.2rem; border:2px solid var(--c-accent); border-radius:50%; font-weight:800; margin-right:.65rem; }
+  .wordmark__logo {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin-right: 0.65rem;
+    object-fit: contain;
+  }
   .nav { display: flex; align-items: center; gap: clamp(0.9rem, 2.5vw, 1.8rem); flex-wrap: wrap; }
   .nav__link {
     font-size: var(--fs-small);
