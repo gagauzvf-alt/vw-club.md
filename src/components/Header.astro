@@ -26,7 +26,7 @@ const isActive = (key: string) => path.startsWith(key);
 <header class="header">
   <div class="container header__inner">
     <a href={l(locale, '/')} class="wordmark" aria-label="VW Club Moldova">
-      <img class="wordmark__logo" src="/web-app-manifest-192x192.png" alt="" width="44" height="44" />
+      <img class="wordmark__logo" src="/favicon-96x96.png" alt="" width="44" height="44" decoding="async" />
       <span>Club Moldova</span>
     </a>
     <nav class="nav" aria-label={locale === 'ro' ? 'Navigare principală' : 'Основная навигация'}>
@@ -99,5 +99,14 @@ const isActive = (key: string) => path.startsWith(key);
   .nav__lang:hover { border-color: var(--c-accent); color: var(--c-text); }
   @media (max-width: 40rem) {
     .header__inner { flex-direction: column; align-items: flex-start; padding-block: 0.75rem; min-height: 0; }
+    .nav {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, max-content);
+      gap: 0.35rem 1rem;
+      overflow: visible;
+    }
+    .nav__link { flex: 0 0 auto; font-size: 0.82rem; }
+    .nav__lang { flex: 0 0 auto; }
   }
 </style>

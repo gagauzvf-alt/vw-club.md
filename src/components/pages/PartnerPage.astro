@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { SITE, t, type Locale } from '../../lib/i18n';
+import { avifSrcset, imageSrcset } from '../../lib/images';
 interface Props { locale: Locale }
 const { locale } = Astro.props;
 const ui = t[locale];
@@ -31,7 +32,8 @@ const schema = { '@type': 'Organization', '@id': `${SITE.url}/#service-partner`,
         { src: '/images/partner/vw_autoservice_03.webp', alt: locale === 'ru' ? 'Рабочая зона автосервиса' : 'Zona de lucru a service-ului auto' },
       ].map((image) => (
         <picture>
-          <source media="(max-width: 640px)" srcset={image.src.replace('.webp', '-640.webp')} />
+          <source type="image/avif" srcset={avifSrcset(image.src)} sizes="(max-width: 640px) 100vw, 50vw" />
+          <source type="image/webp" srcset={imageSrcset(image.src)} sizes="(max-width: 640px) 100vw, 50vw" />
           <img src={image.src} alt={image.alt} width="1200" height="800" loading="lazy" decoding="async" />
         </picture>
       ))}

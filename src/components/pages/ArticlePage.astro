@@ -3,8 +3,9 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { render } from 'astro:content';
 import { SITE, t, l, formatDate, modelSlug, type Locale } from '../../lib/i18n';
 import type { Article } from '../../lib/articles';
+import { getArticles } from '../../lib/articles';
 import { mediaForArticle } from '../../lib/articleMedia';
-import { mobileImageSrc } from '../../lib/images';
+import { avifSrcset, imageSrcset } from '../../lib/images';
 
 interface Props {
   locale: Locale;
@@ -20,6 +21,33 @@ const resolvedCover = cover ?? media[0]?.src;
 const { Content } = await render(article);
 
 const path = `/zhurnal/${article.id}/`;
+const related = (await getArticles(locale))
+  .filter((candidate) =>
+    candidate.id !== article.id &&
+    candidate.data.model.some((name) => model.includes(name)))
+  .slice(0, 3);
+const metaTitle = title
+  .replace(locale === 'ru' ? ' перед покупкой' : ' înainte de cumpărare', '')
+  .replace(locale === 'ru' ? 'базовая проверка' : 'verificarea de bază', locale === 'ru' ? 'проверка' : 'verificare');
+const editorial = locale === 'ru' ? {
+  quick: 'Кратко',
+  first: 'Что проверить в первую очередь',
+  checks: ['VIN, комплектацию и историю обслуживания', 'кузов, безопасность и следы ремонта', 'холодный запуск, тестовую поездку и диагностику всех блоков'],
+  author: 'Редакция VW Club Moldova',
+  methodology: 'Как мы готовим материалы',
+  sources: 'Справочные источники',
+  sourcesNote: 'Точную процедуру и допуски проверяйте по VIN и заводской документации.',
+  related: 'Ещё по этой модели',
+} : {
+  quick: 'Pe scurt',
+  first: 'Ce verificăm mai întâi',
+  checks: ['VIN-ul, echiparea și istoricul de service', 'caroseria, siguranța și urmele reparațiilor', 'pornirea la rece, testul rutier și diagnoza tuturor modulelor'],
+  author: 'Redacția VW Club Moldova',
+  methodology: 'Cum pregătim materialele',
+  sources: 'Surse de referință',
+  sourcesNote: 'Procedura exactă și toleranțele trebuie verificate după VIN și documentația producătorului.',
+  related: 'Mai multe despre acest model',
+};
 
 const articleSchema = {
   '@type': 'Article',
@@ -54,7 +82,7 @@ const partnerNote = {
 
 <BaseLayout
   locale={locale}
-  title={`${title} — VW Club Moldova`}
+  title={metaTitle}
   description={description}
   path={path}
   altPath={hasTranslation ? path : null}
@@ -75,7 +103,7 @@ const partnerNote = {
         <h1>{title}</h1>
         <p class="article-head__meta">
           <time datetime={date.toISOString()}>{formatDate(date, locale)}</time>
-          <span> · {locale === 'ru' ? 'Редакция VW Club Moldova' : 'Redacția VW Club Moldova'}</span>
+          <span> · <a href={l(locale, '/o-klube/') + '#editorial-policy'}>{editorial.author}</a></span>
         </p>
         {(model.length > 0 || engine.length > 0) && (
           <p class="article-head__tags">
@@ -87,10 +115,18 @@ const partnerNote = {
         )}
       </header>
 
+      <aside class="article-summary" aria-labelledby="article-summary-title">
+        <h2 id="article-summary-title">{editorial.quick}</h2>
+        <p>{description}</p>
+        <strong>{editorial.first}</strong>
+        <ul>{editorial.checks.map((check) => <li>{check}</li>)}</ul>
+      </aside>
+
       {resolvedCover && (
         <figure class="article-cover-wrap">
           <picture>
-            <source media="(max-width: 640px)" srcset={mobileImageSrc(resolvedCover)} />
+            <source type="image/avif" srcset={avifSrcset(resolvedCover)} sizes="(max-width: 704px) 100vw, 704px" />
+            <source type="image/webp" srcset={imageSrcset(resolvedCover)} sizes="(max-width: 704px) 100vw, 704px" />
             <img class="article-cover" src={resolvedCover} alt={media[0]?.alt[locale] ?? title} width="1200" height="800" fetchpriority="high" decoding="async" />
           </picture>
           {media[0]?.credit && <figcaption>{media[0].credit}</figcaption>}
@@ -102,7 +138,8 @@ const partnerNote = {
           {media.slice(1).map((entry) => (
             <figure>
               <picture>
-                <source media="(max-width: 640px)" srcset={mobileImageSrc(entry.src)} />
+                <source type="image/avif" srcset={avifSrcset(entry.src)} sizes="(max-width: 640px) 100vw, 340px" />
+                <source type="image/webp" srcset={imageSrcset(entry.src)} sizes="(max-width: 640px) 100vw, 340px" />
                 <img src={entry.src} alt={entry.alt[locale]} width="1200" height="800" loading="lazy" decoding="async" />
               </picture>
               {(entry.caption || entry.credit) && (
@@ -117,6 +154,23 @@ const partnerNote = {
         <Content />
       </div>
 
+      <aside class="references" aria-labelledby="references-title">
+        <h2 id="references-title">{editorial.sources}</h2>
+        <p>{editorial.sourcesNote}</p>
+        <ul>
+          <li><a class="link" href="https://www.volkswagen.de/de/besitzer-und-service/ueber-ihr-auto/kundeninformationen.html" target="_blank" rel="noopener">Volkswagen: manuale, informații pentru clienți și erWin</a></li>
+          <li><a class="link" href="https://www.volkswagen-newsroom.com/en/images/topics/model-archive-47" target="_blank" rel="noopener">Volkswagen Newsroom: model archive</a></li>
+          <li><a class="link" href={l(locale, '/o-klube/') + '#editorial-policy'}>{editorial.methodology}</a></li>
+        </ul>
+      </aside>
+
+      {related.length > 0 && (
+        <aside class="related" aria-labelledby="related-title">
+          <h2 id="related-title">{editorial.related}</h2>
+          <ul>{related.map((item) => <li><a class="link" href={l(locale, `/zhurnal/${item.id}/`)}>{item.data.title}</a></li>)}</ul>
+        </aside>
+      )}
+
       <aside class="partner-note">
         <p>
           {partnerNote.text}
@@ -130,7 +184,19 @@ const partnerNote = {
 <style>
   .article-head { display: grid; gap: var(--space-2); margin-bottom: var(--space-4); }
   .article-head__meta { color: var(--c-text-faint); font-size: var(--fs-small); }
+  .article-head__meta a { color: inherit; text-underline-offset: 3px; }
   .article-head__tags { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+  .article-summary {
+    display: grid;
+    gap: var(--space-1);
+    margin-bottom: var(--space-4);
+    padding: var(--space-3);
+    background: var(--c-bg-inset);
+    border-left: 4px solid var(--c-accent);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .article-summary h2 { font-size: var(--fs-h3); }
+  .article-summary ul { padding-left: 1.25rem; color: var(--c-text-soft); }
   .article-cover-wrap { margin: 0 0 var(--space-4); }
   .article-cover { border-radius: var(--radius); }
   .article-cover-wrap figcaption,
@@ -166,4 +232,14 @@ const partnerNote = {
   }
   .partner-note code { color: var(--c-text); font-weight: 700; letter-spacing: 0.06em; }
   .partner-note .link { margin-left: 0.5em; }
+  .references, .related {
+    display: grid;
+    gap: var(--space-1);
+    margin-top: var(--space-5);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--c-line);
+  }
+  .references h2, .related h2 { font-size: var(--fs-h3); }
+  .references p, .references li, .related li { color: var(--c-text-soft); font-size: var(--fs-small); }
+  .references ul, .related ul { display: grid; gap: .5rem; padding-left: 1.2rem; }
 </style>

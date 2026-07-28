@@ -15,6 +15,21 @@ const path = `/models/${group.slug}/`;
 
 const title = ui.modelPageTitle(group.model);
 const intro = ui.modelPageIntro(group.model);
+const years = [...new Set(group.articles.map((article) => article.data.years).filter(Boolean))];
+const engines = [...new Set(group.articles.flatMap((article) => article.data.engine))];
+const overview = locale === 'ru' ? {
+  title: 'Что есть в разделе',
+  years: 'Поколение и годы',
+  engines: 'Двигатели в материалах',
+  guides: 'Практические руководства',
+  note: 'Перед работами сверяйте двигатель, коробку и комплектацию по VIN: одно название модели может объединять разные технические версии.',
+} : {
+  title: 'Ce găsești în secțiune',
+  years: 'Generație și ani',
+  engines: 'Motoare în materiale',
+  guides: 'Ghiduri practice',
+  note: 'Înainte de lucrări, verificați motorul, cutia și echiparea după VIN: aceeași denumire de model poate include versiuni tehnice diferite.',
+};
 
 // CollectionPage связывает модельную страницу со статьями — механика GEO/AEO
 const schema = {
@@ -24,7 +39,7 @@ const schema = {
 
 <BaseLayout
   locale={locale}
-  title={`${title} — VW Club Moldova`}
+  title={`Volkswagen ${group.model}: ${locale === 'ru' ? 'руководства' : 'ghiduri'}`}
   description={intro}
   path={path}
   altPath={hasTranslation ? path : null}
@@ -38,6 +53,16 @@ const schema = {
       <h1>{title}</h1>
       <p class="intro">{intro}</p>
 
+      <aside class="model-overview">
+        <h2>{overview.title}</h2>
+        <dl>
+          {years.length > 0 && <div><dt>{overview.years}</dt><dd>{years.join(', ')}</dd></div>}
+          {engines.length > 0 && <div><dt>{overview.engines}</dt><dd>{engines.join(', ')}</dd></div>}
+          <div><dt>{overview.guides}</dt><dd>{group.articles.length}</dd></div>
+        </dl>
+        <p>{overview.note}</p>
+      </aside>
+
       <h2 class="sub">{ui.articlesAbout}</h2>
       <div class="grid-cards">
         {group.articles.map((article) => <ArticleCard article={article} locale={locale} />)}
@@ -49,5 +74,12 @@ const schema = {
 <style>
   h1 { margin-block: var(--space-1) var(--space-2); }
   .intro { color: var(--c-text-soft); max-width: 42rem; }
+  .model-overview { display:grid; gap:var(--space-2); margin-top:var(--space-4); padding:var(--space-3); background:var(--c-bg-inset); border-radius:var(--radius); }
+  .model-overview h2 { font-size:var(--fs-h3); }
+  .model-overview dl { display:flex; gap:var(--space-4); flex-wrap:wrap; }
+  .model-overview dl div { display:grid; gap:.2rem; }
+  .model-overview dt { color:var(--c-text-faint); font-size:var(--fs-micro); text-transform:uppercase; letter-spacing:var(--track-caps); }
+  .model-overview dd { font-weight:650; }
+  .model-overview p { max-width:48rem; color:var(--c-text-soft); font-size:var(--fs-small); }
   .sub { margin-block: var(--space-5) var(--space-3); font-size: var(--fs-h3); }
 </style>

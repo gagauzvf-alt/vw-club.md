@@ -23,6 +23,11 @@ const year = new Date().getFullYear();
     <p class="footer__partner">
       {ui.partnerOfClub}: <a class="link" href={l(locale, '/partner/')}>BRAVO MOTORS</a>
     </p>
+    <p class="footer__partner">
+      <a class="link" href={l(locale, '/o-klube/') + '#editorial-policy'}>
+        {locale === 'ru' ? 'Редакционная политика' : 'Politica editorială'}
+      </a>
+    </p>
     <p class="footer__disclaimer">© {year} VW Club Moldova. {ui.disclaimer}</p>
   </div>
 </footer>

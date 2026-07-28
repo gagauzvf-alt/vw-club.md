@@ -11,6 +11,11 @@ const copy = locale === 'ru' ? {
   communityNumber:'50 000+',
   communityText:'участников объединяет VW Club Moldova. С 2013 года клуб остаётся местом, где владельцы Volkswagen обмениваются опытом, задают технические вопросы и помогают друг другу.',
   principles:'Принципы', items:['Польза владельцу важнее рекламы.','Технические утверждения требуют проверяемых источников.','Клуб и сервис-партнёр остаются разными организациями.','Неизвестные контакты и статистика не публикуются до подтверждения.'],
+  editorialTitle:'Редакционная политика',
+  editorialIntro:'Материалы готовит редакция VW Club Moldova на основе опыта сообщества, осмотра автомобилей и проверяемой технической документации.',
+  editorialItems:['Разделяем наблюдение, диагностическую гипотезу и подтверждённую неисправность.','Для процедур, допусков и комплектаций приоритет имеет заводская документация, подобранная по VIN.','Не публикуем стоимость ремонта без подтверждённой причины и точной конфигурации автомобиля.','Исправляем материал, если появляются более точные данные; существенные обновления отмечаем датой.'],
+  contactsTitle:'Связь с редакцией',
+  contactsText:'Предложить уточнение, сообщить об ошибке или поделиться подтверждённым опытом можно через группу VW Club Moldova в Facebook.',
   cta:'Перейти в Facebook-группу',
 } : {
   title:'Despre club — VW Club Moldova', desc:'VW Club Moldova este comunitatea tehnică independentă care, din 2013, reunește peste 50 000 de proprietari și pasionați Volkswagen.',
@@ -20,6 +25,11 @@ const copy = locale === 'ru' ? {
   communityNumber:'50 000+',
   communityText:'de membri fac parte din VW Club Moldova. Din 2013, clubul este locul în care proprietarii Volkswagen fac schimb de experiență, discută întrebări tehnice și se ajută reciproc.',
   principles:'Principii', items:['Utilitatea pentru proprietar este mai importantă decât publicitatea.','Afirmațiile tehnice necesită surse verificabile.','Clubul și partenerul service rămân entități separate.','Contactele și statisticile necunoscute nu sunt publicate înainte de confirmare.'],
+  editorialTitle:'Politica editorială',
+  editorialIntro:'Materialele sunt pregătite de redacția VW Club Moldova pe baza experienței comunității, inspecției automobilelor și documentației tehnice verificabile.',
+  editorialItems:['Separăm observația, ipoteza de diagnostic și defecțiunea confirmată.','Pentru proceduri, toleranțe și echipări are prioritate documentația producătorului selectată după VIN.','Nu publicăm costuri de reparație fără o cauză confirmată și configurația exactă a automobilului.','Corectăm materialul când apar date mai precise; actualizările importante primesc o dată nouă.'],
+  contactsTitle:'Contact cu redacția',
+  contactsText:'O precizare, o eroare sau o experiență confirmată poate fi transmisă prin grupul VW Club Moldova de pe Facebook.',
   cta:'Intră în grupul Facebook',
 };
 ---
@@ -32,6 +42,13 @@ const copy = locale === 'ru' ? {
       <p>{copy.communityText}</p>
     </aside>
     <h2>{copy.principles}</h2><ul>{copy.items.map((i)=><li>{i}</li>)}</ul>
+    <section id="editorial-policy" class="editorial">
+      <h2>{copy.editorialTitle}</h2>
+      <p>{copy.editorialIntro}</p>
+      <ul>{copy.editorialItems.map((i)=><li>{i}</li>)}</ul>
+      <h3>{copy.contactsTitle}</h3>
+      <p>{copy.contactsText}</p>
+    </section>
     {SITE.fbGroup ? <a class="btn btn--primary" href={SITE.fbGroup} target="_blank" rel="noopener">{copy.cta}</a> : <p class="note">{copy.cta}</p>}
   </div></section>
 </BaseLayout>
@@ -41,5 +58,7 @@ const copy = locale === 'ru' ? {
   .community-fact__eyebrow{font-size:var(--fs-micro);font-weight:750;letter-spacing:var(--track-caps);text-transform:uppercase;color:var(--c-accent)!important}
   .community-fact strong{font-size:clamp(2.8rem,8vw,5rem);line-height:1;color:#003b70;letter-spacing:-.04em}
   .community-fact p:last-child{max-width:35rem}
+  .editorial{display:grid;gap:1rem;margin-top:1.5rem;padding-top:2rem;border-top:1px solid var(--c-line);scroll-margin-top:6rem}
+  .editorial h3{margin-top:.5rem}
   .note{padding:1rem;background:var(--c-bg-inset);border-left:4px solid var(--c-accent)}
 </style>

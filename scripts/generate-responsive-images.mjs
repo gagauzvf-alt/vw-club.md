@@ -36,8 +36,8 @@ for (const [group, files] of Object.entries(targets)) {
   for (const file of files) {
     const source = path.join(sourceRoot, file);
     const basename = path.parse(file).name.toLowerCase();
-    for (const width of [1200, 640]) {
-      await sharp(source)
+    for (const width of [1200, 960, 640]) {
+      const pipeline = sharp(source)
         .rotate()
         .resize({
           width,
@@ -45,11 +45,18 @@ for (const [group, files] of Object.entries(targets)) {
           fit: 'cover',
           position: 'centre',
           withoutEnlargement: true,
-        })
+        });
+      const suffix = width === 1200 ? '' : `-${width}`;
+      await pipeline
+        .clone()
         .webp({ quality: width === 1200 ? 82 : 76, effort: 5 })
-        .toFile(path.join(directory, `${basename}${width === 640 ? '-640' : ''}.webp`));
+        .toFile(path.join(directory, `${basename}${suffix}.webp`));
+      await pipeline
+        .clone()
+        .avif({ quality: width === 1200 ? 58 : 52, effort: 5 })
+        .toFile(path.join(directory, `${basename}${suffix}.avif`));
     }
   }
 }
 
-console.log('Desktop and mobile WebP image variants generated.');
+console.log('Responsive WebP and AVIF image variants generated.');

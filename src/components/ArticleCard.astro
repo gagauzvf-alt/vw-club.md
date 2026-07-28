@@ -2,7 +2,7 @@
 import { t, l, formatDate, type Locale } from '../lib/i18n';
 import type { Article } from '../lib/articles';
 import { mediaForArticle } from '../lib/articleMedia';
-import { mobileImageSrc } from '../lib/images';
+import { avifSrcset, imageSrcset } from '../lib/images';
 
 interface Props {
   article: Article;
@@ -18,8 +18,9 @@ const coverAlt = mediaForArticle(article.id)[0]?.alt[locale] ?? '';
 <a class="card" href={l(locale, `/zhurnal/${article.id}/`)}>
   {resolvedCover && (
     <picture>
-      <source media="(max-width: 640px)" srcset={mobileImageSrc(resolvedCover)} />
-      <img class="card__cover" src={resolvedCover} alt={coverAlt} loading="lazy" decoding="async" />
+      <source type="image/avif" srcset={avifSrcset(resolvedCover)} sizes="(max-width: 640px) 100vw, (max-width: 1152px) 50vw, 368px" />
+      <source type="image/webp" srcset={imageSrcset(resolvedCover)} sizes="(max-width: 640px) 100vw, (max-width: 1152px) 50vw, 368px" />
+      <img class="card__cover" src={resolvedCover} alt={coverAlt} width="1200" height="675" loading="lazy" decoding="async" />
     </picture>
   )}
   <div class="card__body">

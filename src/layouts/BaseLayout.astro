@@ -97,14 +97,27 @@ const absoluteOgImage = new URL(ogImage, SITE.url).href;
     <meta name="twitter:image" content={absoluteOgImage} />
     <meta name="twitter:image:alt" content={imageAlt} />
     <meta name="theme-color" content="#003b70" />
-    <!-- Google tag (gtag.js) -->
-    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-Z6806LCLRP"></script>
+    <!-- Analytics loads after the critical rendering path. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'G-Z6806LCLRP');
+      const loadAnalytics = () => {
+        if (document.querySelector('script[data-google-tag]')) return;
+        const script = document.createElement('script');
+        script.async = true;
+        script.dataset.googleTag = '';
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-Z6806LCLRP';
+        document.head.append(script);
+      };
+      window.addEventListener('load', () => {
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(loadAnalytics, { timeout: 2500 });
+        } else {
+          window.setTimeout(loadAnalytics, 1200);
+        }
+      }, { once: true });
     </script>
     {structuredData && <JsonLd graph={schemaGraph} />}
   </head>
