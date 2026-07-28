@@ -36,7 +36,8 @@ for (const [group, files] of Object.entries(targets)) {
   for (const file of files) {
     const source = path.join(sourceRoot, file);
     const basename = path.parse(file).name.toLowerCase();
-    for (const width of [1200, 960, 640]) {
+    const widths = group === 'home' ? [1200, 960, 768, 640] : [1200, 960, 640];
+    for (const width of widths) {
       const pipeline = sharp(source)
         .rotate()
         .resize({

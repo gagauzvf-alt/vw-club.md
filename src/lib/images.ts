@@ -1,4 +1,4 @@
-export const imageVariant = (src: string, width: 640 | 960) =>
+export const imageVariant = (src: string, width: 640 | 768 | 960) =>
   src.replace(/(\.[a-z0-9]+)$/i, `-${width}$1`);
 
 export const mobileImageSrc = (src: string) => imageVariant(src, 640);
@@ -12,3 +12,6 @@ export const avifSrcset = (src: string) => {
   const avif = avifSrc(src);
   return `${imageVariant(avif, 640)} 640w, ${imageVariant(avif, 960)} 960w, ${avif} 1200w`;
 };
+
+export const homeImageSrcset = (src: string) =>
+  `${imageVariant(src, 640)} 640w, ${imageVariant(src, 768)} 768w, ${imageVariant(src, 960)} 960w, ${src} 1200w`;

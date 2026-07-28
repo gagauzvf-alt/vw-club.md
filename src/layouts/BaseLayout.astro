@@ -97,27 +97,34 @@ const absoluteOgImage = new URL(ogImage, SITE.url).href;
     <meta name="twitter:image" content={absoluteOgImage} />
     <meta name="twitter:image:alt" content={imageAlt} />
     <meta name="theme-color" content="#003b70" />
-    <!-- Analytics loads after the critical rendering path. -->
+    <!-- Analytics loads after the first interaction or once the fully loaded page has settled. -->
     <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-Z6806LCLRP');
+      let analyticsTimer;
       const loadAnalytics = () => {
         if (document.querySelector('script[data-google-tag]')) return;
+        window.clearTimeout(analyticsTimer);
+        analyticsEvents.forEach((eventName) => {
+          window.removeEventListener(eventName, loadAnalytics);
+        });
         const script = document.createElement('script');
         script.async = true;
         script.dataset.googleTag = '';
         script.src = 'https://www.googletagmanager.com/gtag/js?id=G-Z6806LCLRP';
         document.head.append(script);
       };
-      window.addEventListener('load', () => {
-        if ('requestIdleCallback' in window) {
-          window.requestIdleCallback(loadAnalytics, { timeout: 2500 });
-        } else {
-          window.setTimeout(loadAnalytics, 1200);
-        }
-      }, { once: true });
+      const analyticsEvents = ['pointerdown', 'keydown', 'touchstart', 'scroll'];
+      analyticsEvents.forEach((eventName) => {
+        window.addEventListener(eventName, loadAnalytics, { once: true, passive: true });
+      });
+      const loadAnalyticsAfterPage = () => {
+        analyticsTimer = window.setTimeout(loadAnalytics, 4000);
+      };
+      if (document.readyState === 'complete') loadAnalyticsAfterPage();
+      else window.addEventListener('load', loadAnalyticsAfterPage, { once: true });
     </script>
     {structuredData && <JsonLd graph={schemaGraph} />}
   </head>

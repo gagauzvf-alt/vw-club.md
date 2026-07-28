@@ -4,7 +4,7 @@ import ArticleCard from '../ArticleCard.astro';
 import PartnerSection from '../PartnerSection.astro';
 import { SITE, t, l, type Locale } from '../../lib/i18n';
 import { getArticles } from '../../lib/articles';
-import { avifSrcset, imageSrcset } from '../../lib/images';
+import { avifSrc, homeImageSrcset } from '../../lib/images';
 
 interface Props { locale: Locale }
 const { locale } = Astro.props;
@@ -49,8 +49,8 @@ const models = [
       </div>
       <aside class="tech-card">
         <picture>
-          <source type="image/avif" srcset={avifSrcset('/images/home/vw_logo.webp')} sizes="(max-width: 768px) 100vw, 55vw" />
-          <source type="image/webp" srcset={imageSrcset('/images/home/vw_logo.webp')} sizes="(max-width: 768px) 100vw, 55vw" />
+          <source type="image/avif" srcset={homeImageSrcset(avifSrc('/images/home/vw_logo.webp'))} sizes="(max-width: 768px) calc(100vw - 2rem), 55vw" />
+          <source type="image/webp" srcset={homeImageSrcset('/images/home/vw_logo.webp')} sizes="(max-width: 768px) calc(100vw - 2rem), 55vw" />
           <img src="/images/home/vw_logo.webp" alt="VW Club Moldova" width="1200" height="804" fetchpriority="high" decoding="async" />
         </picture>
         <span>MQB · DSG · TDI · TSI</span>
