@@ -29,7 +29,7 @@ const isActive = (key: string) => path.startsWith(key);
       <img class="wordmark__logo" src="/web-app-manifest-192x192.png" alt="" width="44" height="44" />
       <span>Club Moldova</span>
     </a>
-    <nav class="nav" aria-label="Основная навигация">
+    <nav class="nav" aria-label={locale === 'ro' ? 'Navigare principală' : 'Основная навигация'}>
       {nav.map((item) => (
         <a href={item.href} class="nav__link" aria-current={isActive(item.key) ? 'page' : undefined}>
           {item.label}

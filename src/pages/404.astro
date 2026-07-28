@@ -2,19 +2,19 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { t, l } from '../lib/i18n';
 
-const ui = t.ru;
+const ui = t.ro;
 ---
 
-<BaseLayout locale="ru" title="404 — VW Club Moldova" description={ui.notFoundText} path="/404/" altPath={null} robots="noindex, follow" structuredData={false}>
+<BaseLayout locale="ro" title="404 — VW Club Moldova" description={ui.notFoundText} path="/404/" altPath={null} robots="noindex, follow" structuredData={false}>
   <section class="section">
     <div class="container nf">
       <p class="nf__code">404</p>
       <h1>{ui.notFoundTitle}</h1>
       <p class="nf__text">{ui.notFoundText}</p>
-      <p class="nf__text nf__text--ro">{t.ro.notFoundText}</p>
+      <p class="nf__text nf__text--ro">{t.ru.notFoundText}</p>
       <div class="nf__actions">
-        <a class="btn btn--primary" href={l('ru', '/zhurnal/')}>{ui.toJournal}</a>
-        <a class="btn btn--ghost" href={l('ro', '/zhurnal/')}>{t.ro.toJournal}</a>
+        <a class="btn btn--primary" href={l('ro', '/zhurnal/')}>{ui.toJournal}</a>
+        <a class="btn btn--ghost" href={l('ru', '/zhurnal/')}>{t.ru.toJournal}</a>
       </div>
     </div>
   </section>

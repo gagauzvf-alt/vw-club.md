@@ -60,7 +60,7 @@ for (const file of files) {
     for (const required of ['Organization', 'WebSite']) if (!pageTypes.has(required)) errors.push(`${url}: отсутствует ${required}`);
     if (!pageTypes.has('WebPage') && !pageTypes.has('CollectionPage')) errors.push(`${url}: отсутствует тип страницы`);
     if (/\/(?:ro\/)?zhurnal\/[^/]+\/$/.test(url) && !pageTypes.has('Article')) errors.push(`${url}: отсутствует Article`);
-    if (url !== '/' && url !== '/ro/' && !pageTypes.has('BreadcrumbList')) errors.push(`${url}: отсутствует BreadcrumbList`);
+    if (url !== '/' && url !== '/ru/' && !pageTypes.has('BreadcrumbList')) errors.push(`${url}: отсутствует BreadcrumbList`);
   }
   console.log(`${url}: ${[...pageTypes].sort().join(', ') || '(noindex; JSON-LD omitted)'}`);
 }

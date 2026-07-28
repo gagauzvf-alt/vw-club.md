@@ -1,7 +1,7 @@
 export type Locale = 'ru' | 'ro';
 
-export const LOCALES: Locale[] = ['ru', 'ro'];
-export const DEFAULT_LOCALE: Locale = 'ru';
+export const LOCALES: Locale[] = ['ro', 'ru'];
+export const DEFAULT_LOCALE: Locale = 'ro';
 
 export const SITE = {
   name: 'VW Club Moldova',
@@ -15,7 +15,7 @@ export const SITE = {
 };
 
 export function localePrefix(locale: Locale): string {
-  return locale === 'ru' ? '' : '/ro';
+  return locale === 'ro' ? '' : '/ru';
 }
 
 export function l(locale: Locale, path: string): string {

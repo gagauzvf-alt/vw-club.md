@@ -14,7 +14,7 @@ const year = new Date().getFullYear();
     <div class="footer__brand">
       <span class="footer__name">VW Club Moldova</span>
     </div>
-    <nav class="footer__links" aria-label="Соцсети">
+    <nav class="footer__links" aria-label={locale === 'ro' ? 'Rețele sociale' : 'Соцсети'}>
       {SITE.fbGroup && <a class="link" href={SITE.fbGroup} target="_blank" rel="noopener">Facebook Group</a>}
       {SITE.fbPage && <a class="link" href={SITE.fbPage} target="_blank" rel="noopener">Facebook Page</a>}
       {SITE.instagram && <a class="link" href={SITE.instagram} target="_blank" rel="noopener">Instagram</a>}

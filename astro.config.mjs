@@ -27,18 +27,18 @@ export default defineConfig({
   },
   adapter,
   i18n: {
-    defaultLocale: 'ru',
-    locales: ['ru', 'ro'],
+    defaultLocale: 'ro',
+    locales: ['ro', 'ru'],
     routing: {
-      prefixDefaultLocale: false, // RU в корне, RO под /ro/
+      prefixDefaultLocale: false, // RO в корне, RU под /ru/
     },
   },
   integrations: [
     ...keystaticIntegrations,
     sitemap({
       i18n: {
-        defaultLocale: 'ru',
-        locales: { ru: 'ru', ro: 'ro' },
+        defaultLocale: 'ro',
+        locales: { ro: 'ro', ru: 'ru' },
       },
     }),
   ],

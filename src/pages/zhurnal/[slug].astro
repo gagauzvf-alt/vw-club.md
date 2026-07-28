@@ -4,12 +4,12 @@ import { getArticles } from '../../lib/articles';
 
 export async function getStaticPaths() {
   const [ru, ro] = await Promise.all([getArticles('ru'), getArticles('ro')]);
-  const roIds = new Set(ro.map((a) => a.id));
-  return ru.map((article) => ({
+  const ruIds = new Set(ru.map((a) => a.id));
+  return ro.map((article) => ({
     params: { slug: article.id },
-    props: { article, hasTranslation: roIds.has(article.id) },
+    props: { article, hasTranslation: ruIds.has(article.id) },
   }));
 }
 const { article, hasTranslation } = Astro.props;
 ---
-<ArticlePage locale="ru" article={article} hasTranslation={hasTranslation} />
+<ArticlePage locale="ro" article={article} hasTranslation={hasTranslation} />

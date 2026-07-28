@@ -9,7 +9,7 @@ export const SCHEMA_IDS = {
 } as const;
 
 export function canonicalUrl(locale: Locale, path: string): string {
-  const localized = locale === 'ru' ? path : `/ro${path}`;
+  const localized = locale === 'ro' ? path : `/ru${path}`;
   return new URL(localized, SITE.url).href;
 }
 
