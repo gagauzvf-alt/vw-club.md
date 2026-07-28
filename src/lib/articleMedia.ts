@@ -66,6 +66,34 @@ export const articleMedia: Record<string, ArticleMediaItem[]> = {
     photo('vw_amarok3.0tdi2018__02', 'Amarok 3.0 TDI, дополнительный ракурс', 'Amarok 3.0 TDI, vedere suplimentară'),
     photo('vw_amarok_2.0tdi_2012', 'Volkswagen Amarok 2.0 TDI 2012', 'Volkswagen Amarok 2.0 TDI din 2012'),
   ],
+  't-cross-proverka-pered-pokupkoy': [
+    photo('vw-t-cross', 'Volkswagen T-Cross первого поколения', 'Volkswagen T-Cross din prima generație'),
+    photo('vw-t-cross_02', 'Volkswagen T-Cross, дополнительный ракурс', 'Volkswagen T-Cross, vedere suplimentară'),
+  ],
+  'arteon-proverka-pered-pokupkoy': [
+    photo('vw_arteon_01', 'Volkswagen Arteon первого поколения', 'Volkswagen Arteon din prima generație'),
+    photo('vw_arteon_02', 'Volkswagen Arteon, вид сзади', 'Volkswagen Arteon, vedere din spate'),
+    photo('vw_arteon_03', 'Volkswagen Arteon, салон автомобиля', 'Volkswagen Arteon, interiorul automobilului'),
+  ],
+  'atlas-iz-ssha-proverka': [
+    photo('vw_atlas_01', 'Volkswagen Atlas первого поколения', 'Volkswagen Atlas din prima generație'),
+    photo('vw_atlas_02', 'Volkswagen Atlas, вид сбоку', 'Volkswagen Atlas, vedere laterală'),
+    photo('vw_atlas_03', 'Volkswagen Atlas, задняя часть кузова', 'Volkswagen Atlas, partea din spate'),
+    photo('vw_atlas_04', 'Volkswagen Atlas, салон автомобиля', 'Volkswagen Atlas, interiorul automobilului'),
+  ],
+  'beetle-a5-proverka-pered-pokupkoy': [
+    photo('vw_beetle_01', 'Volkswagen Beetle A5', 'Volkswagen Beetle A5'),
+    photo('vw_beetle_02', 'Volkswagen Beetle A5, вид сбоку', 'Volkswagen Beetle A5, vedere laterală'),
+    photo('vw_beetle_03', 'Volkswagen Beetle A5, вид сзади', 'Volkswagen Beetle A5, vedere din spate'),
+    photo('vw_beetle_04', 'Volkswagen Beetle A5, салон автомобиля', 'Volkswagen Beetle A5, interiorul automobilului'),
+    photo('vw_beetle_05', 'Volkswagen Beetle A5, багажное отделение', 'Volkswagen Beetle A5, portbagajul'),
+  ],
+  'touran-iii-proverka-pered-pokupkoy': [
+    photo('vw_touran_01', 'Volkswagen Touran III', 'Volkswagen Touran III'),
+    photo('vw_touran_02', 'Volkswagen Touran III, вид сбоку', 'Volkswagen Touran III, vedere laterală'),
+    photo('vw_touran_03', 'Volkswagen Touran III, задняя часть кузова', 'Volkswagen Touran III, partea din spate'),
+    photo('vw_touran_04', 'Volkswagen Touran III, салон автомобиля', 'Volkswagen Touran III, interiorul automobilului'),
+  ],
 };
 
 export const mediaForArticle = (id: string) => articleMedia[id] ?? [];
