@@ -39,44 +39,46 @@ const copy = locale === 'ro'
 const isActive = (key: string) => path.startsWith(key);
 ---
 
-<header class="header" data-site-header>
-  <div class="container header__inner">
-    <a href={l(locale, '/')} class="wordmark" aria-label={`${ui.nav.home} — VW Club Moldova`}>
-      <img class="wordmark__logo" src="/favicon-96x96.png" alt="" width="44" height="44" decoding="async" />
-      <span>Club Moldova</span>
-    </a>
-
-    <nav class="desktop-nav" aria-label={copy.primary}>
-      {navigation.map((item) => (
-        <a href={item.href} class="nav__link" aria-current={isActive(item.key) ? 'page' : undefined}>
-          {item.label}
-        </a>
-      ))}
-      <a
-        href={switchHref}
-        class="nav__lang"
-        rel="alternate"
-        hreflang={otherLocale}
-        lang={otherLocale}
-        aria-label={copy.language}
-      >
-        {otherLocale.toUpperCase()}
+<div data-site-header>
+  <header class="header">
+    <div class="container header__inner">
+      <a href={l(locale, '/')} class="wordmark" aria-label={`${ui.nav.home} — VW Club Moldova`}>
+        <img class="wordmark__logo" src="/favicon-96x96.png" alt="" width="44" height="44" decoding="async" />
+        <span>Club Moldova</span>
       </a>
-    </nav>
 
-    <button
-      class="menu-button"
-      type="button"
-      aria-label={copy.open}
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      data-menu-open
-    >
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-      <span aria-hidden="true"></span>
-    </button>
-  </div>
+      <nav class="desktop-nav" aria-label={copy.primary}>
+        {navigation.map((item) => (
+          <a href={item.href} class="nav__link" aria-current={isActive(item.key) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))}
+        <a
+          href={switchHref}
+          class="nav__lang"
+          rel="alternate"
+          hreflang={otherLocale}
+          lang={otherLocale}
+          aria-label={copy.language}
+        >
+          {otherLocale.toUpperCase()}
+        </a>
+      </nav>
+
+      <button
+        class="menu-button"
+        type="button"
+        aria-label={copy.open}
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-menu-open
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
 
   <div class="mobile-menu-overlay" aria-hidden="true" data-menu-overlay></div>
 
@@ -121,7 +123,7 @@ const isActive = (key: string) => path.startsWith(key);
       </a>
     </div>
   </div>
-</header>
+</div>
 
 <script>
   const header = document.querySelector<HTMLElement>('[data-site-header]');
