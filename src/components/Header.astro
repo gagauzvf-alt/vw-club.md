@@ -10,43 +10,222 @@ interface Props {
 const { locale, path, altPath } = Astro.props;
 const ui = t[locale];
 const otherLocale: Locale = locale === 'ru' ? 'ro' : 'ru';
-// Переключатель ведёт на ту же страницу другой локали; если перевода нет — на главную
 const switchHref = l(otherLocale, altPath ?? '/');
 
-const nav = [
+// Единственный источник данных для desktop- и mobile-навигации.
+const navigation = [
   { href: l(locale, '/o-klube/'), label: ui.nav.about, key: '/o-klube/' },
   { href: l(locale, '/zhurnal/'), label: ui.nav.journal, key: '/zhurnal/' },
   { href: l(locale, '/models/'), label: ui.nav.models, key: '/models/' },
   { href: l(locale, '/partner/'), label: ui.nav.partner, key: '/partner/' },
 ];
 
+const copy = locale === 'ro'
+  ? {
+      primary: 'Navigare principală',
+      mobile: 'Meniu mobil',
+      open: 'Deschide meniul',
+      close: 'Închide meniul',
+      language: 'Schimbă limba în rusă',
+    }
+  : {
+      primary: 'Основная навигация',
+      mobile: 'Мобильное меню',
+      open: 'Открыть меню',
+      close: 'Закрыть меню',
+      language: 'Переключить язык на румынский',
+    };
+
 const isActive = (key: string) => path.startsWith(key);
 ---
 
-<header class="header">
+<header class="header" data-site-header>
   <div class="container header__inner">
-    <a href={l(locale, '/')} class="wordmark" aria-label="VW Club Moldova">
+    <a href={l(locale, '/')} class="wordmark" aria-label={`${ui.nav.home} — VW Club Moldova`}>
       <img class="wordmark__logo" src="/favicon-96x96.png" alt="" width="44" height="44" decoding="async" />
       <span>Club Moldova</span>
     </a>
-    <nav class="nav" aria-label={locale === 'ro' ? 'Navigare principală' : 'Основная навигация'}>
-      {nav.map((item) => (
+
+    <nav class="desktop-nav" aria-label={copy.primary}>
+      {navigation.map((item) => (
         <a href={item.href} class="nav__link" aria-current={isActive(item.key) ? 'page' : undefined}>
           {item.label}
         </a>
       ))}
-      <a href={switchHref} class="nav__lang" rel="alternate" hreflang={otherLocale}>
+      <a
+        href={switchHref}
+        class="nav__lang"
+        rel="alternate"
+        hreflang={otherLocale}
+        lang={otherLocale}
+        aria-label={copy.language}
+      >
         {otherLocale.toUpperCase()}
       </a>
     </nav>
+
+    <button
+      class="menu-button"
+      type="button"
+      aria-label={copy.open}
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      data-menu-open
+    >
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="mobile-menu-overlay" aria-hidden="true" data-menu-overlay></div>
+
+  <div
+    class="mobile-menu"
+    id="mobile-menu"
+    role="dialog"
+    aria-modal="true"
+    aria-label={copy.mobile}
+    aria-hidden="true"
+    inert
+    data-mobile-menu
+  >
+    <div class="mobile-menu__header">
+      <a href={l(locale, '/')} class="wordmark" aria-label={`${ui.nav.home} — VW Club Moldova`}>
+        <img class="wordmark__logo" src="/favicon-96x96.png" alt="" width="44" height="44" decoding="async" />
+        <span>Club Moldova</span>
+      </a>
+      <button class="menu-close" type="button" aria-label={copy.close} data-menu-close>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <nav class="mobile-nav" aria-label={copy.primary}>
+      {navigation.map((item) => (
+        <a href={item.href} class="mobile-nav__link" aria-current={isActive(item.key) ? 'page' : undefined}>
+          {item.label}
+        </a>
+      ))}
+    </nav>
+
+    <div class="mobile-menu__footer">
+      <a
+        href={switchHref}
+        class="nav__lang mobile-menu__lang"
+        rel="alternate"
+        hreflang={otherLocale}
+        lang={otherLocale}
+        aria-label={copy.language}
+      >
+        {otherLocale.toUpperCase()}
+      </a>
+    </div>
   </div>
 </header>
 
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+
+  if (header) {
+    const openButton = header.querySelector<HTMLButtonElement>('[data-menu-open]');
+    const closeButton = header.querySelector<HTMLButtonElement>('[data-menu-close]');
+    const menu = header.querySelector<HTMLElement>('[data-mobile-menu]');
+    const overlay = header.querySelector<HTMLElement>('[data-menu-overlay]');
+    const mobileQuery = window.matchMedia('(max-width: 900px)');
+    let scrollY = 0;
+
+    const focusableSelector = [
+      'a[href]',
+      'button:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(',');
+
+    const isOpen = () => openButton?.getAttribute('aria-expanded') === 'true';
+
+    const unlockPage = () => {
+      document.body.classList.remove('menu-open');
+      document.body.style.removeProperty('top');
+      window.scrollTo(0, scrollY);
+    };
+
+    const closeMenu = ({ restoreFocus = true } = {}) => {
+      if (!openButton || !menu || !overlay) return;
+      const wasOpen = isOpen();
+      menu.classList.remove('is-open');
+      overlay.classList.remove('is-open');
+      openButton.setAttribute('aria-expanded', 'false');
+      menu.setAttribute('aria-hidden', 'true');
+      menu.setAttribute('inert', '');
+      overlay.setAttribute('aria-hidden', 'true');
+      if (wasOpen) unlockPage();
+      if (wasOpen && restoreFocus) openButton.focus();
+    };
+
+    const openMenu = () => {
+      if (!openButton || !closeButton || !menu || !overlay || !mobileQuery.matches) return;
+      scrollY = window.scrollY;
+      menu.classList.add('is-open');
+      overlay.classList.add('is-open');
+      openButton.setAttribute('aria-expanded', 'true');
+      menu.setAttribute('aria-hidden', 'false');
+      menu.removeAttribute('inert');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.top = `-${scrollY}px`;
+      document.body.classList.add('menu-open');
+      closeButton.focus();
+    };
+
+    openButton?.addEventListener('click', openMenu);
+    closeButton?.addEventListener('click', () => closeMenu());
+    overlay?.addEventListener('click', () => closeMenu());
+    menu?.querySelectorAll<HTMLAnchorElement>('a[href]').forEach((link) => {
+      link.addEventListener('click', () => closeMenu({ restoreFocus: false }));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (!isOpen() || !menu) return;
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        closeMenu();
+        return;
+      }
+      if (event.key !== 'Tab') return;
+      const focusable = [...menu.querySelectorAll<HTMLElement>(focusableSelector)]
+        .filter((element) => !element.hasAttribute('disabled') && element.getClientRects().length > 0);
+      if (focusable.length === 0) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    mobileQuery.addEventListener('change', (event) => {
+      if (!event.matches) closeMenu({ restoreFocus: false });
+    });
+  }
+</script>
+
 <style>
+  :global(html) {
+    overflow-x: clip;
+  }
+  :global(body.menu-open) {
+    position: fixed;
+    width: 100%;
+    overflow: hidden;
+  }
   .header {
     position: sticky;
     top: 0;
-    z-index: 10;
+    z-index: 30;
     background: color-mix(in srgb, var(--c-bg) 88%, transparent);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--c-line);
@@ -61,8 +240,8 @@ const isActive = (key: string) => path.startsWith(key);
   .wordmark {
     display: flex;
     align-items: center;
-    text-decoration: none;
     flex-shrink: 0;
+    text-decoration: none;
   }
   .wordmark__logo {
     width: 2.75rem;
@@ -70,43 +249,140 @@ const isActive = (key: string) => path.startsWith(key);
     margin-right: 0.65rem;
     object-fit: contain;
   }
-  .nav { display: flex; align-items: center; gap: clamp(0.9rem, 2.5vw, 1.8rem); flex-wrap: wrap; }
+  .desktop-nav { display: flex; align-items: center; gap: clamp(0.9rem, 2.5vw, 1.8rem); }
   .nav__link {
-    font-size: var(--fs-small);
-    font-weight: 500;
-    color: var(--c-text-soft);
-    text-decoration: none;
     padding-block: 0.35em;
     border-bottom: 2px solid transparent;
+    color: var(--c-text-soft);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    text-decoration: none;
     transition: color 0.15s ease, border-color 0.15s ease;
   }
-  .nav__link:hover { color: var(--c-text); }
-  .nav__link[aria-current='page'] {
-    color: var(--c-text);
-    border-bottom-color: var(--c-accent);
-  }
+  .nav__link:hover,
+  .nav__link[aria-current='page'] { color: var(--c-text); }
+  .nav__link[aria-current='page'] { border-bottom-color: var(--c-accent); }
   .nav__lang {
+    display: inline-flex;
+    min-width: 44px;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--c-line);
+    border-radius: 4px;
+    color: var(--c-text-soft);
     font-size: var(--fs-micro);
     font-weight: 700;
     letter-spacing: 0.1em;
-    color: var(--c-text-soft);
     text-decoration: none;
-    border: 1px solid var(--c-line);
-    border-radius: 4px;
-    padding: 0.35em 0.7em;
-    transition: border-color 0.15s ease, color 0.15s ease;
   }
   .nav__lang:hover { border-color: var(--c-accent); color: var(--c-text); }
-  @media (max-width: 40rem) {
-    .header__inner { flex-direction: column; align-items: flex-start; padding-block: 0.75rem; min-height: 0; }
-    .nav {
-      width: 100%;
+  .menu-button,
+  .menu-close {
+    display: none;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--c-line);
+    border-radius: 4px;
+    background: var(--c-bg);
+    color: var(--c-text);
+    cursor: pointer;
+  }
+  .mobile-menu,
+  .mobile-menu-overlay { display: none; }
+
+  @media (max-width: 900px) {
+    .header__inner { min-height: 4rem; }
+    .desktop-nav { display: none; }
+    .menu-button {
       display: grid;
-      grid-template-columns: repeat(3, max-content);
-      gap: 0.35rem 1rem;
-      overflow: visible;
+      place-content: center;
+      gap: 5px;
     }
-    .nav__link { flex: 0 0 auto; font-size: 0.82rem; }
-    .nav__lang { flex: 0 0 auto; }
+    .menu-button span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: currentColor;
+    }
+    .mobile-menu-overlay {
+      display: block;
+      position: fixed;
+      inset: 0;
+      z-index: 31;
+      background: rgb(0 0 0 / 55%);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.18s ease, visibility 0.18s;
+    }
+    .mobile-menu-overlay.is-open { opacity: 1; visibility: visible; }
+    .mobile-menu {
+      display: flex;
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 32;
+      width: min(90vw, 25rem);
+      min-width: 0;
+      flex-direction: column;
+      overflow: hidden;
+      background: var(--c-bg);
+      box-shadow: -12px 0 30px rgb(0 0 0 / 20%);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.18s ease, visibility 0.18s;
+    }
+    .mobile-menu.is-open { opacity: 1; visibility: visible; }
+    .mobile-menu__header {
+      display: flex;
+      min-height: 4rem;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.625rem 1rem;
+      border-bottom: 1px solid var(--c-line);
+    }
+    .menu-close {
+      display: grid;
+      flex: 0 0 44px;
+      place-content: center;
+    }
+    .menu-close span,
+    .menu-close span::after {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background: currentColor;
+      transform: rotate(45deg);
+    }
+    .menu-close span::after { content: ''; transform: rotate(90deg); }
+    .mobile-nav {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 0.75rem 1rem;
+    }
+    .mobile-nav__link {
+      display: flex;
+      min-height: 52px;
+      align-items: center;
+      border-bottom: 1px solid var(--c-line);
+      color: var(--c-text);
+      font-weight: 600;
+      text-decoration: none;
+    }
+    .mobile-nav__link[aria-current='page'] { color: var(--c-accent); }
+    .mobile-menu__footer {
+      padding: 1rem;
+      border-top: 1px solid var(--c-line);
+    }
+    .mobile-menu__lang { width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-menu,
+    .mobile-menu-overlay { transition: none; }
   }
 </style>
